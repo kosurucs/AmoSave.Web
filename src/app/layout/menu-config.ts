@@ -1,4 +1,4 @@
-export type MainMenuKey = 'market' | 'trade' | 'analyse' | 'app-settings' | 'algo' | 'strategy-builder';
+export type MainMenuKey = 'market' | 'trade' | 'analyse' | 'user' | 'app-settings' | 'algo' | 'strategy-builder';
 
 export type MenuTab = {
   label: string;
@@ -30,6 +30,12 @@ export const mainMenuItems: MainMenuItem[] = [
     title: 'Analyse',
     description: 'Quotes, historical and trigger workflows',
     defaultPath: '/app/market/quotes',
+  },
+  {
+    key: 'user',
+    title: 'User',
+    description: 'Profile and margins overview',
+    defaultPath: '/app/user/profile',
   },
   {
     key: 'app-settings',
@@ -70,9 +76,14 @@ export const subMenuTabsByMainMenu: Record<MainMenuKey, MenuTab[]> = {
     { label: 'GTT', path: '/app/gtt/list' },
     { label: 'Mutual Funds', path: '/app/mf/orders' },
   ],
+  user: [
+    { label: 'Profile', path: '/app/user/profile' },
+    { label: 'Margins', path: '/app/user/margins' },
+  ],
   'app-settings': [
     { label: 'User Setting', path: '/app/settings/user' },
     { label: 'System Settings', path: '/app/settings/system' },
+    { label: 'Connection Check', path: '/app/settings/connection-check' },
   ],
   algo: [
     { label: 'Strgy Builder', path: '/app/algo/strategy-builder' },
@@ -87,6 +98,10 @@ export const subMenuTabsByMainMenu: Record<MainMenuKey, MenuTab[]> = {
 export function getActiveMainMenu(pathname: string): MainMenuKey {
   if (pathname.startsWith('/app/settings')) {
     return 'app-settings';
+  }
+
+  if (pathname.startsWith('/app/user')) {
+    return 'user';
   }
 
   if (pathname.startsWith('/app/algo')) {

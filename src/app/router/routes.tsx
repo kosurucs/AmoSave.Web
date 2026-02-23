@@ -6,6 +6,7 @@ import { PositionsHomePage } from '@/features/system/pages/positions-home-page';
 import { OrdersHomePage } from '@/features/system/pages/orders-home-page';
 import { UserSettingsPage } from '@/features/system/pages/user-settings-page';
 import { SystemSettingsPage } from '@/features/system/pages/system-settings-page';
+import { ConnectionCheckPage } from '@/features/system/pages/connection-check-page';
 import { StrategyBuilderPage } from '@/features/algo/pages/strategy-builder-page';
 import { BackTestingPage } from '@/features/algo/pages/back-testing-page';
 import { ProfilePage } from '@/features/user/pages/profile-page';
@@ -55,6 +56,7 @@ export const routes = [
       { path: 'orders', element: <OrdersHomePage /> },
       { path: 'settings/user', element: <UserSettingsPage /> },
       { path: 'settings/system', element: <SystemSettingsPage /> },
+      { path: 'settings/connection-check', element: <ConnectionCheckPage /> },
       { path: 'algo/strategy-builder', element: <StrategyBuilderPage /> },
       { path: 'algo/back-testing', element: <BackTestingPage /> },
       { path: 'strategy-builder', element: <StrategyBuilderPage /> },
