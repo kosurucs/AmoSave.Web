@@ -1,42 +1,74 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { getStoredAuthUserName, setStoredAuthAccessKey, setStoredAuthUserName } from '@/services/api/auth.service';
+import {
+  getKiteConnected,
+  getStoredAuthAccessKey,
+  getStoredAuthUserName,
+  authService,
+  setKiteConnected,
+  setStoredAuthAccessKey,
+  setStoredAuthUserName,
+} from '@/services/api/auth.service';
 
 export function Header() {
   const navigate = useNavigate();
   const profileName = getStoredAuthUserName() ?? 'Guest';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [kiteConnected, setKiteConnectedState] = useState(getKiteConnected);
+  const [kiteLoading, setKiteLoading] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
+  // Sync Kite status when storage changes (e.g., after callback redirect)
   useEffect(() => {
-    if (!isMenuOpen) {
-      return;
-    }
+    const onStorage = () => setKiteConnectedState(getKiteConnected());
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
+  useEffect(() => {
+    if (!isMenuOpen) return;
     const handleDocumentClick = (event: MouseEvent) => {
       const target = event.target;
-      if (!(target instanceof Node)) {
-        return;
-      }
-
-      if (menuRef.current?.contains(target)) {
-        return;
-      }
-
+      if (!(target instanceof Node)) return;
+      if (menuRef.current?.contains(target)) return;
       setIsMenuOpen(false);
     };
-
     document.addEventListener('click', handleDocumentClick);
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
+    return () => document.removeEventListener('click', handleDocumentClick);
   }, [isMenuOpen]);
 
   const handleLogout = () => {
     setStoredAuthUserName(null);
     setStoredAuthAccessKey(null);
+    setKiteConnected(false);
+    setKiteConnectedState(false);
     setIsMenuOpen(false);
     navigate('/');
+  };
+
+  const handleConnectKite = async () => {
+    const accessKey = getStoredAuthAccessKey();
+    if (!accessKey) {
+      navigate('/');
+      return;
+    }
+    setKiteLoading(true);
+    try {
+      const url = await authService.getKiteLoginUrl();
+      window.location.href = url;
+    } catch {
+      setKiteLoading(false);
+    }
+  };
+
+  const handleDisconnectKite = async () => {
+    setIsMenuOpen(false);
+    try {
+      await authService.destroyKiteSession();
+    } finally {
+      setKiteConnected(false);
+      setKiteConnectedState(false);
+    }
   };
 
   return (
@@ -46,6 +78,31 @@ export function Header() {
         <span className="status-dot" />
         Market Open · NIFTY 50
       </div>
+
+      {/* Kite connection status */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto', marginRight: 12 }}>
+        {kiteConnected ? (
+          <span
+            style={{ fontSize: 12, color: 'var(--color-success, #4caf50)', display: 'flex', alignItems: 'center', gap: 4 }}
+            title="Kite Connected"
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} />
+            Kite Live
+          </span>
+        ) : (
+          <button
+            className="btn"
+            style={{ fontSize: 12, padding: '2px 10px', opacity: kiteLoading ? 0.6 : 1 }}
+            type="button"
+            onClick={handleConnectKite}
+            disabled={kiteLoading}
+            title="Connect Zerodha Kite for live trading"
+          >
+            {kiteLoading ? 'Redirecting…' : 'Connect Kite'}
+          </button>
+        )}
+      </div>
+
       <div className="app-header__profile-wrap" ref={menuRef}>
         <button
           className="app-header__profile"
@@ -64,6 +121,11 @@ export function Header() {
             <NavLink className="app-header__profile-menu-item" to="/app/settings/system" role="menuitem" onClick={() => setIsMenuOpen(false)}>
               System Setting
             </NavLink>
+            {kiteConnected && (
+              <button className="app-header__profile-menu-item" type="button" role="menuitem" onClick={handleDisconnectKite}>
+                Disconnect Kite
+              </button>
+            )}
             <button className="app-header__profile-menu-item" type="button" role="menuitem" onClick={handleLogout}>
               Logout
             </button>

@@ -16,4 +16,9 @@ export const queryKeys = {
   mfHoldings: ['mf', 'holdings'] as const,
   mfOrders: ['mf', 'orders'] as const,
   mfSips: ['mf', 'sips'] as const,
+  dashboardSummary: ['dashboard', 'summary'] as const,
+  pnlCalendar: ['dashboard', 'pnl-calendar'] as const,
+  riskSettings: ['risk', 'settings'] as const,
+  riskState: ['risk', 'state'] as const,
+  alerts: ['alerts', 'list'] as const,
 };

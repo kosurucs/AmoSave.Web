@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '@/app/layout/app-shell';
 import { LoginPage } from '@/features/auth/pages/login-page';
+import { KiteCallbackPage } from '@/features/auth/pages/kite-callback-page';
 import { WatchlistPage } from '@/features/system/pages/watchlist-page';
 import { PositionsHomePage } from '@/features/system/pages/positions-home-page';
 import { OrdersHomePage } from '@/features/system/pages/orders-home-page';
@@ -44,16 +45,28 @@ import { MfSipDetailPage } from '@/features/mutual-funds/pages/mf-sip-detail-pag
 import { MfCreateSipPage } from '@/features/mutual-funds/pages/mf-create-sip-page';
 import { MfModifySipPage } from '@/features/mutual-funds/pages/mf-modify-sip-page';
 import { MfCancelSipPage } from '@/features/mutual-funds/pages/mf-cancel-sip-page';
+import { DashboardPage } from '@/features/dashboard/pages/dashboard-page';
+import { OptionsChainPage } from '@/features/options/pages/options-chain-page';
+import { OptionsPcrPage } from '@/features/options/pages/options-pcr-page';
+import { RiskSettingsPage } from '@/features/risk/pages/risk-settings-page';
+import { RiskStatePage } from '@/features/risk/pages/risk-state-page';
+import { AlertsPage } from '@/features/alerts/pages/alerts-page';
+import { AuthGuard } from '@/app/router/auth-guard';
 
 export const routes = [
   { path: '/', element: <LoginPage /> },
+  { path: '/kite-callback', element: <KiteCallbackPage /> },
   {
     path: '/app',
-    element: <AppShell />,
+    element: <AuthGuard />,
     children: [
-      { path: 'watchlist', element: <WatchlistPage /> },
-      { path: 'positions', element: <PositionsHomePage /> },
-      { path: 'orders', element: <OrdersHomePage /> },
+      {
+        path: '',
+        element: <AppShell />,
+        children: [
+          { path: 'watchlist', element: <WatchlistPage /> },
+          { path: 'positions', element: <PositionsHomePage /> },
+          { path: 'orders', element: <OrdersHomePage /> },
       { path: 'settings/user', element: <UserSettingsPage /> },
       { path: 'settings/system', element: <SystemSettingsPage /> },
       { path: 'settings/connection-check', element: <ConnectionCheckPage /> },
@@ -95,6 +108,14 @@ export const routes = [
       { path: 'mf/sips/create', element: <MfCreateSipPage /> },
       { path: 'mf/sips/modify', element: <MfModifySipPage /> },
       { path: 'mf/sips/cancel', element: <MfCancelSipPage /> },
+      { path: 'dashboard', element: <DashboardPage /> },
+      { path: 'options/chain', element: <OptionsChainPage /> },
+      { path: 'options/pcr', element: <OptionsPcrPage /> },
+      { path: 'risk/settings', element: <RiskSettingsPage /> },
+      { path: 'risk/state', element: <RiskStatePage /> },
+      { path: 'alerts', element: <AlertsPage /> },
+        ],
+      },
     ],
   },
 ];

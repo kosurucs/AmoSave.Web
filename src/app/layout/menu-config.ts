@@ -1,4 +1,4 @@
-export type MainMenuKey = 'market' | 'trade' | 'analyse' | 'user' | 'app-settings' | 'algo' | 'strategy-builder';
+export type MainMenuKey = 'market' | 'trade' | 'analyse' | 'user' | 'app-settings' | 'algo' | 'strategy-builder' | 'options' | 'risk';
 
 export type MenuTab = {
   label: string;
@@ -55,6 +55,18 @@ export const mainMenuItems: MainMenuItem[] = [
     description: 'Dedicated strategy builder workspace',
     defaultPath: '/app/strategy-builder',
   },
+  {
+    key: 'options',
+    title: 'Options',
+    description: 'Options chain, IV, PCR, Max Pain',
+    defaultPath: '/app/options/chain',
+  },
+  {
+    key: 'risk',
+    title: 'Risk & Alerts',
+    description: 'Risk settings, daily state, price alerts',
+    defaultPath: '/app/risk/settings',
+  },
 ];
 
 export const subMenuTabsByMainMenu: Record<MainMenuKey, MenuTab[]> = {
@@ -71,6 +83,7 @@ export const subMenuTabsByMainMenu: Record<MainMenuKey, MenuTab[]> = {
     { label: 'Convert Position', path: '/app/portfolio/convert-position' },
   ],
   analyse: [
+    { label: 'Dashboard', path: '/app/dashboard' },
     { label: 'Quotes', path: '/app/market/quotes' },
     { label: 'Historical', path: '/app/market/historical' },
     { label: 'GTT', path: '/app/gtt/list' },
@@ -93,9 +106,21 @@ export const subMenuTabsByMainMenu: Record<MainMenuKey, MenuTab[]> = {
     { label: 'Stragy Builder', path: '/app/strategy-builder' },
     { label: 'Back testing', path: '/app/algo/back-testing' },
   ],
+  options: [
+    { label: 'Option Chain', path: '/app/options/chain' },
+    { label: 'PCR', path: '/app/options/pcr' },
+  ],
+  risk: [
+    { label: 'Risk Settings', path: '/app/risk/settings' },
+    { label: 'Risk State', path: '/app/risk/state' },
+    { label: 'Alerts', path: '/app/alerts' },
+  ],
 };
 
 export function getActiveMainMenu(pathname: string): MainMenuKey {
+  if (pathname.startsWith('/app/options')) return 'options';
+  if (pathname.startsWith('/app/risk') || pathname.startsWith('/app/alerts')) return 'risk';
+
   if (pathname.startsWith('/app/settings')) {
     return 'app-settings';
   }
