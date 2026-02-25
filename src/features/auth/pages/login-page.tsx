@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { authService, setStoredAuthAccessKey, setStoredAuthUserName } from '@/services/api/auth.service';
 import { mapHttpError } from '@/services/http/error-mapper';
 
@@ -27,13 +27,20 @@ export function LoginPage() {
         ? responseUserName.trim()
         : username.trim();
       setStoredAuthUserName(storedUserName);
-      const responseAccessToken = envelope.data?.accessToken;
+
+      // API returns `accessKey` (not `accessToken`) — check both for safety
+      const responseAccessToken = envelope.data?.accessKey ?? envelope.data?.accessToken;
       const storedAccessKey = typeof responseAccessToken === 'string' && responseAccessToken.trim()
         ? responseAccessToken.trim()
         : null;
-      setStoredAuthAccessKey(storedAccessKey);
 
-      navigate('/app/watchlist');
+      if (!storedAccessKey) {
+        setLoginError('Login succeeded but no access token was returned. Please try again.');
+        return;
+      }
+
+      setStoredAuthAccessKey(storedAccessKey);
+      navigate('/app/dashboard');
     } catch (error) {
       setLoginError(mapHttpError(error));
     } finally {
@@ -83,17 +90,18 @@ export function LoginPage() {
           </button>
           {loginError ? <p className="error-text">{loginError}</p> : null}
         </form>
-        <Link
+        <button
           className="btn"
-          to="/app/watchlist"
-          style={{ display: 'grid', placeItems: 'center' }}
+          type="button"
+          style={{ marginTop: 8 }}
           onClick={() => {
             setStoredAuthUserName('Guest');
-            setStoredAuthAccessKey(null);
+            setStoredAuthAccessKey('guest-demo-mode');
+            navigate('/app/dashboard');
           }}
         >
-          Guest
-        </Link>
+          Continue as Guest (Demo)
+        </button>
       </aside>
     </div>
   );

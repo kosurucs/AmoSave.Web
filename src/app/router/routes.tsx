@@ -8,6 +8,23 @@ import { OrdersHomePage } from '@/features/system/pages/orders-home-page';
 import { UserSettingsPage } from '@/features/system/pages/user-settings-page';
 import { SystemSettingsPage } from '@/features/system/pages/system-settings-page';
 import { ConnectionCheckPage } from '@/features/system/pages/connection-check-page';
+// Analyse pages
+import { OpenInterestPage } from '@/features/analyse/pages/open-interest-page';
+import { MultistrikeOiPage } from '@/features/analyse/pages/multistrike-oi-page';
+import { FiiDiiPage } from '@/features/analyse/pages/fii-dii-page';
+import { LiveChartsPage } from '@/features/analyse/pages/live-charts-page';
+import { StraddleChartsPage } from '@/features/analyse/pages/straddle-charts-page';
+import { FuturesDataPage } from '@/features/analyse/pages/futures-data-page';
+import { OptionsScreenerPage } from '@/features/analyse/pages/options-screener-page';
+import { IvChartPage } from '@/features/analyse/pages/iv-chart-page';
+import { CandlestickPage } from '@/features/analyse/pages/candlestick-page';
+import { DailyAnalysisPage } from '@/features/analyse/pages/daily-analysis-page';
+import { CalendarPage } from '@/features/analyse/pages/calendar-page';
+// Trade pages
+import { TradeStrategiesPage } from '@/features/trade/pages/trade-strategies-page';
+import { ExpiryTradesPage } from '@/features/trade/pages/expiry-trades-page';
+import { EasyOptionsPage } from '@/features/trade/pages/easy-options-page';
+import { DraftPortfoliosPage } from '@/features/trade/pages/draft-portfolios-page';
 import { StrategyBuilderPage } from '@/features/algo/pages/strategy-builder-page';
 import { BackTestingPage } from '@/features/algo/pages/back-testing-page';
 import { ProfilePage } from '@/features/user/pages/profile-page';
@@ -53,8 +70,11 @@ import { RiskStatePage } from '@/features/risk/pages/risk-state-page';
 import { AlertsPage } from '@/features/alerts/pages/alerts-page';
 import { AuthGuard } from '@/app/router/auth-guard';
 
+import { Navigate } from 'react-router-dom';
+
 export const routes = [
-  { path: '/', element: <LoginPage /> },
+  { path: '/', element: <Navigate to="/app/dashboard" replace /> },
+  { path: '/login', element: <LoginPage /> },
   { path: '/kite-callback', element: <KiteCallbackPage /> },
   {
     path: '/app',
@@ -64,12 +84,30 @@ export const routes = [
         path: '',
         element: <AppShell />,
         children: [
+          { index: true, element: <Navigate to="/app/dashboard" replace /> },
           { path: 'watchlist', element: <WatchlistPage /> },
           { path: 'positions', element: <PositionsHomePage /> },
           { path: 'orders', element: <OrdersHomePage /> },
       { path: 'settings/user', element: <UserSettingsPage /> },
       { path: 'settings/system', element: <SystemSettingsPage /> },
       { path: 'settings/connection-check', element: <ConnectionCheckPage /> },
+      // Analyse
+      { path: 'analyse/open-interest', element: <OpenInterestPage /> },
+      { path: 'analyse/multistrike-oi', element: <MultistrikeOiPage /> },
+      { path: 'analyse/fii-dii', element: <FiiDiiPage /> },
+      { path: 'analyse/live-charts', element: <LiveChartsPage /> },
+      { path: 'analyse/straddle-charts', element: <StraddleChartsPage /> },
+      { path: 'analyse/futures-data', element: <FuturesDataPage /> },
+      { path: 'analyse/screener', element: <OptionsScreenerPage /> },
+      { path: 'analyse/iv-chart', element: <IvChartPage /> },
+      { path: 'analyse/candlestick', element: <CandlestickPage /> },
+      { path: 'analyse/daily-analysis', element: <DailyAnalysisPage /> },
+      { path: 'analyse/calendar', element: <CalendarPage /> },
+      // Trade
+      { path: 'trade/strategies', element: <TradeStrategiesPage /> },
+      { path: 'trade/expiry-trades', element: <ExpiryTradesPage /> },
+      { path: 'trade/easy-options', element: <EasyOptionsPage /> },
+      { path: 'trade/drafts', element: <DraftPortfoliosPage /> },
       { path: 'algo/strategy-builder', element: <StrategyBuilderPage /> },
       { path: 'algo/back-testing', element: <BackTestingPage /> },
       { path: 'strategy-builder', element: <StrategyBuilderPage /> },
